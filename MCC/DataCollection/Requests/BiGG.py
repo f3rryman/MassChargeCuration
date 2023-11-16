@@ -103,7 +103,23 @@ class BiGGInterface(DatabaseInterface):
         """
         base_url = 'http://bigg.ucsd.edu/api/v2/universal/metabolites/{}'
         result = requests.get(base_url.format(meta_id))
-        try:
+        if result.status_code != 204:
+            try:
+                metabolite_json = result.json()
+                charges = metabolite_json['charges']
+                formulae = metabolite_json['formulae']
+                if len(charges) == 0:
+                    charges = [None]
+                if len(formulae) == 0:
+                    formulae = [None]
+            except json.decoder.JSONDecodeError:
+                charges = [None]
+                formulae = [None]
+        else:
+            charges = [None]
+            formulae = [None]
+        
+        """ try:
             metabolite_json = result.json()
             charges = metabolite_json['charges']
             formulae = metabolite_json['formulae']
@@ -113,5 +129,5 @@ class BiGGInterface(DatabaseInterface):
                 formulae = [None]
         except json.decoder.JSONDecodeError:
             charges = [None]
-            formulae = [None]
+            formulae = [None] """
         return set((formula, charge) for formula in formulae for charge in charges)
