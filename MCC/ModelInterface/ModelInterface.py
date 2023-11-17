@@ -130,6 +130,7 @@ class ModelInterface():
                 document = reader.readSBML(model)
                 model = document.getModel()
                 interface = interfaces["libsbml"](model)
+                print("Read model from string with libsbml.")
             except:
                 logging.exception("Could not load model.")
         else:
@@ -137,6 +138,7 @@ class ModelInterface():
                 import libsbml
                 if type(model) == libsbml.Model:
                     interface = interfaces["libsbml"](model)
+                    print("Read model with libsbml.")
                 else:
                     raise TypeError
             except:
@@ -144,6 +146,7 @@ class ModelInterface():
                     import cobra
                     if type(model) == cobra.core.model.Model:
                         interface = interfaces["cobra"](model)
+                        print("Read model with cobrapy.")
                     else:
                         raise TypeError
                 except:
